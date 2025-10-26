@@ -1,0 +1,286 @@
+.pixel-fullscreen-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: #fff;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.pixel-fullscreen-text {
+    font-size: clamp(4rem, 15vw, 12rem);
+    font-weight: bold;
+    color: #007bff;
+    text-align: center;
+    user-select: none;
+    text-shadow: 0 2px 16px #aaa;
+}
+
+/* --- Giao diện Sáng (Mặc định) --- */
+:root {
+    --bg-color: #f0f2f5;
+    --container-bg: white;
+    --text-color: #1c1e21;
+    --link-color: #007bff;
+    --border-color: #ddd;
+    --hover-bg: #e9ecef;
+    --list-item-bg: #f8f9fa;
+    --correct-bg: #d4edda;
+    --correct-border: #28a745;
+    --correct-text: #155724;
+    --incorrect-bg: #f8d7da;
+    --incorrect-border: #dc3545;
+    --incorrect-text: #721c24;
+    --passage-text: #555;
+}
+
+body { 
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
+    background-color: var(--bg-color); 
+    color: var(--text-color);
+    padding: 40px; 
+    margin: 0; 
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.container { 
+    max-width: 800px;
+    margin: 0 auto; 
+    background: var(--container-bg); 
+    padding: 20px 40px; 
+    border-radius: 12px; 
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08); 
+    transition: background-color 0.3s;
+    position: relative;
+}
+
+h1, h2, h3 { color: var(--text-color); }
+p, li { line-height: 1.6; }
+hr { border: none; border-top: 1px solid var(--border-color); margin: 30px 0; }
+
+.back-link, a { 
+    color: var(--link-color); 
+    text-decoration: none; 
+    font-weight: 500; 
+}
+
+.exercise-link {
+    font-size: 1.2em; 
+    background-color: var(--list-item-bg); 
+    display: block; 
+    padding: 20px; 
+    border-radius: 8px; 
+    border: 1px solid var(--border-color);
+    transition: background-color 0.2s, transform 0.2s ease-out;
+}
+.exercise-link:hover {
+    background-color: var(--hover-bg);
+    transform: scale(1.02);
+}
+
+/* Quiz Styles */
+.passage {
+    font-size: 0.9em;
+    font-style: italic;
+    color: var(--passage-text);
+    background-color: var(--list-item-bg);
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin: 10px 0;
+    border-left: 4px solid var(--border-color);
+}
+
+.quiz-form .question-block, .result-detail .question-block { 
+    margin-bottom: 30px; 
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUP 0.5s ease-out forwards;
+}
+.quiz-form .options label { 
+    display: block; margin: 8px 0; padding: 10px; 
+    border: 1px solid var(--border-color); border-radius: 6px; 
+    cursor: pointer; transition: background-color 0.2s;
+}
+.quiz-form .options label:hover { background-color: var(--hover-bg); }
+.quiz-form .options input { margin-right: 10px; }
+
+.fill-in-blank-input { 
+    padding: 10px; font-size: 1em; width: 95%; 
+    border: 1px solid var(--border-color); border-radius: 4px;
+    background-color: var(--container-bg); color: var(--text-color);
+    margin-top: 10px;
+}
+
+/* Styles for "order" question tokens */
+.tokens-container {
+    padding: 10px;
+    background: var(--list-item-bg);
+    border: 1px dashed var(--border-color);
+    border-radius: 6px;
+    margin: 10px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.token-drag {
+    background: var(--hover-bg);
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-family: monospace;
+    user-select: none;
+}
+
+.quiz-submit-btn { 
+    background-color: #007bff; color: white; padding: 12px 25px; 
+    border: none; border-radius: 6px; cursor: pointer; font-size: 1.1em;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.quiz-submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+}
+
+/* --- HIỆU ỨNG CHUYỂN TRANG --- */
+.page-content { 
+    display: none;
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out;
+}
+.page-content.active {
+    display: block;
+    opacity: 1;
+}
+
+/* --- HIỆU ỨNG TẢI TRANG (PRELOADER) --- */
+#preloader {
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: var(--bg-color);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.5s ease;
+}
+#preloader.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+.spinner {
+    border: 4px solid var(--hover-bg);
+    border-top: 4px solid var(--link-color);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* --- KEYFRAME CHO HIỆU ỨNG CÂU HỎI --- */
+@keyframes fadeInUP {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- Result Styles --- */
+.result-summary { text-align: center; padding: 20px; background: var(--list-item-bg); border-radius: 8px; margin-bottom: 20px; }
+.result-summary h2 { font-size: 2.5em; color: var(--link-color); margin-bottom: 5px; }
+.result-summary p { margin-top: 5px; font-size: 1.1em; color: var(--text-color); }
+.result-detail .question-block { padding: 15px; border-radius: 6px; }
+.result-detail .correct { border-left: 5px solid var(--correct-border); background-color: var(--correct-bg); }
+.result-detail .incorrect { border-left: 5px solid var(--incorrect-border); background-color: var(--incorrect-bg); }
+.result-detail .user-answer, .result-detail .correct-answer-text { font-weight: bold; }
+
+/* Box for the correct answer text */
+.correct-answer-text-box {
+    background: var(--correct-bg);
+    border: 2px solid var(--correct-border);
+    color: var(--correct-text);
+    padding: 8px 12px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-top: 8px;
+    font-weight: bold;
+}
+.result-detail .correct .correct-answer-text-box {
+     background: var(--correct-bg);
+     color: var(--correct-text);
+     border-color: var(--correct-border);
+}
+.result-detail .incorrect .correct-answer-text-box {
+    /* In dark mode, make the correct answer box stand out even on a red background */
+    background: #d4edda; /* Always light green */
+    color: #155724; /* Always dark green */
+    border-color: #28a745;
+}
+
+
+.result-detail .correct, .result-detail .correct p, .result-detail .correct b, .result-detail .correct i { color: var(--correct-text); }
+.result-detail .incorrect, .result-detail .incorrect p, .result-detail .incorrect b, .result-detail .incorrect i { color: var(--incorrect-text); }
+
+/* --- Nút Chuyển Giao Diện --- */
+.theme-switcher {
+    position: absolute; top: 20px; right: 20px; cursor: pointer;
+    background-color: var(--hover-bg); border: 1px solid var(--border-color);
+    border-radius: 50%; width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; user-select: none; z-index: 1001;
+    transition: transform 0.2s;
+}
+.theme-switcher:hover { transform: scale(1.1); }
+.theme-switcher .icon { display: none; }
+
+/* --- Giao diện Tối --- */
+body.dark-mode {
+    --bg-color: #121212;
+    --container-bg: #1e1e1e;
+    --text-color: #e0e0e0;
+    --link-color: #8ab4f8;
+    --border-color: #444;
+    --hover-bg: #2a2a2a;
+    --list-item-bg: #252525;
+    --correct-bg: #2a3b2e;
+    --correct-text: #a5d6a7;
+    --incorrect-bg: #402c2f;
+    --incorrect-text: #ef9a9a;
+    --passage-text: #aaa;
+}
+body.dark-mode .theme-switcher .sun-icon { display: block; }
+body:not(.dark-mode) .theme-switcher .moon-icon { display: block; }
+
+/* --- HIỆU ỨNG PHÁO HOA VÀ MODAL --- */
+.fireworks-container {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 1000; background: rgba(0, 0, 0, 0.5); display: none;
+}
+.celebration-modal {
+    position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    background-color: var(--container-bg); padding: 30px 40px; border-radius: 12px;
+    text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    z-index: 1001; opacity: 0; transition: opacity 0.3s, transform 0.3s;
+}
+.fireworks-container.active .celebration-modal {
+    opacity: 1; transform: translate(-50%, -50%) scale(1);
+}
+.celebration-modal h2 { font-size: 2em; margin-bottom: 10px; }
+.celebration-modal p { font-size: 3em; font-weight: bold; color: var(--link-color); margin: 10px 0; }
+.celebration-modal button {
+    background-color: #007bff; color: white; padding: 10px 30px; 
+    border: none; border-radius: 6px; cursor: pointer; font-size: 1.1em; margin-top: 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.celebration-modal button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+}
